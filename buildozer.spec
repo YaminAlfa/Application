@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = Application
 
 # (str) Package name
 package.name = myapp
@@ -21,8 +21,6 @@ source.include_exts = py,png,jpg,kv,atlas
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
-
-git = false
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
