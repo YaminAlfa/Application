@@ -21,35 +21,29 @@ jobs:
 
       - name: Install Android SDK and Build Tools
         run: |
-          # Créer un répertoire pour le SDK
-          mkdir -p $HOME/android-sdk
+          # Télécharger et configurer le SDK Android
+          mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk
-
-          # Télécharger et extraire les outils de commande Android
           wget -q "https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip" -O cmdline-tools.zip
           unzip -q cmdline-tools.zip -d cmdline-tools
-          mv cmdline-tools/cmdline-tools cmdline-tools/latest
+          mv cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
           # Configurer les variables d'environnement
           export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/31.0.0
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
 
           # Accepter les licences Android
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-          # Installer les plateformes et outils nécessaires (incluant AIDL)
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-31" "build-tools;31.0.0" "platform-tools"
+          # Installer une version stable des build-tools
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-31" "build-tools;30.0.3" "platform-tools"
 
-      - name: Install AIDL manually
+      - name: Verify Build Tools and AIDL
         run: |
           export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/31.0.0
-          
-          # Vérification et installation manuelle d'AIDL
-          if [ ! -f "$ANDROID_HOME/build-tools/31.0.0/aidl" ]; then
-            echo "AIDL not found, manually verifying installation."
-          fi
-          ls -al $ANDROID_HOME/build-tools/31.0.0/
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/30.0.3
+          ls -al $ANDROID_HOME/build-tools/30.0.3
+          echo "Build tools and AIDL verified!"
 
       - name: Generate buildozer.spec
         run: |
@@ -59,7 +53,7 @@ jobs:
       - name: Build APK
         run: |
           export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/31.0.0
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/30.0.3
           buildozer -v android debug
 
       - name: Upload APK
