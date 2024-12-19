@@ -1,4 +1,4 @@
-name: Build Executable
+name: Build APK
 
 on:
   push:
@@ -13,21 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Install PyInstaller
+      - name: Install dependencies
         run: |
-          pip install pyinstaller
+          sudo apt update
+          sudo apt install -y python3-pip build-essential
+          pip3 install --upgrade buildozer
 
-      - name: Build executable
+      - name: Build APK
         run: |
-          pyinstaller --onefile votre_script.py
+          buildozer init
+          buildozer -v android debug
 
-      - name: Upload executable
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: executable
-          path: dist/votre_script
+          name: android-apk
+          path: bin/*.apk
