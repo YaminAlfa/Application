@@ -16,12 +16,11 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential
-          pip3 install --upgrade buildozer
+          sudo apt install -y python3-pip build-essential zip unzip openjdk-11-jdk
+          pip3 install --upgrade Cython buildozer
 
       - name: Build APK
         run: |
-          buildozer init
           buildozer -v android debug
 
       - name: Upload APK
