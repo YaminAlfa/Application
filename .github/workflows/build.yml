@@ -19,7 +19,7 @@ jobs:
           sudo apt install -y python3-pip build-essential zip unzip openjdk-11-jdk wget
           pip3 install --upgrade Cython buildozer
 
-      - name: Install Android SDK
+      - name: Install Android SDK and Build Tools
         run: |
           mkdir -p $HOME/android-sdk
           wget -q "https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip" -O cmdline-tools.zip
@@ -29,6 +29,13 @@ jobs:
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
           yes | sdkmanager --licenses
           sdkmanager "platforms;android-31" "build-tools;31.0.0" "platform-tools"
+
+      - name: Verify Build Tools
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          sdkmanager --list
+          echo "Build tools installed successfully!"
 
       - name: Generate buildozer.spec
         run: |
