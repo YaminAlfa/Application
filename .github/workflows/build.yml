@@ -19,6 +19,11 @@ jobs:
           sudo apt install -y python3-pip build-essential zip unzip openjdk-11-jdk
           pip3 install --upgrade Cython buildozer
 
+      - name: Generate buildozer.spec
+        run: |
+          buildozer init
+          echo "buildozer.spec generated"
+
       - name: Build APK
         run: |
           buildozer -v android debug
